@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\Custom\ConflictException;
+use App\Http\Requests\User\LoginRequest;
 use App\Models\User;
 use App\Repositories\AuthRepository;
 use Illuminate\Http\Request;
@@ -23,6 +24,12 @@ class AuthController extends Controller
     public function __construct(AuthRepository $AuthRepository)
     {
         $this->AuthRepository = $AuthRepository;
+    }
+
+
+    public function login(LoginRequest $request)
+    {
+        return $this->success($this->AuthRepository->login($request));
     }
 
     public function register(Request $request)
@@ -51,15 +58,6 @@ class AuthController extends Controller
             DB::rollBack();
             throw new ConflictException($e->getMessage());
         }
-    }
-
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-        return $this->success($this->AuthRepository->login($request));
     }
 
     public function logout(Request $request)
