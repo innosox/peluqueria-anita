@@ -4,6 +4,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AttentionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('/citas', AppointmentController::class);
     Route::get('/citas/cliente/{cliente}', [AppointmentController::class, 'getAppointmentsByCustomer']);
     Route::apiResource('/atenciones', AttentionController::class);
+    Route::resource('/servicios', ServiceController::class);
+
 });
 
 
