@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\Custom\ConflictException;
 use App\Http\Requests\Appointment\AppointmentRequest;
+use App\Http\Requests\Appointment\AppointmentStoreRequest;
 use App\Models\Cita;
+use App\Models\Cliente;
 use App\Repositories\AppointmentRepository;
+use App\Repositories\CustomerRepository;
 use App\Traits\RestResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,15 +27,22 @@ class AppointmentController extends Controller
     private $appointmentRepository;
 
     /**
+     * @var CustomerRepository
+     */
+    private $customerRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
     public function __construct(
-        AppointmentRepository $appointmentRepository
+        AppointmentRepository $appointmentRepository,
+        CustomerRepository $customerRepository
         )
     {
         $this->appointmentRepository = $appointmentRepository;
+        $this->customerRepository = $customerRepository;
     }
 
     /**
@@ -70,6 +80,7 @@ class AppointmentController extends Controller
             throw new ConflictException($e->getMessage());
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -116,6 +127,45 @@ class AppointmentController extends Controller
             $this->appointmentRepository->destroy($appointment)
         );
     }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param AppointmentStoreRequest $request
+     * @return JsonResponse
+     */
+    public function generateAppointment(AppointmentStoreRequest $request) : JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+
+            $customer = new Cliente($request->all());
+            $customer = $this->customerRepository->save($customer);
+
+            $appointment = new Cita($request->all() + ['customer_id' => $customer->id]);
+            $appointment = $this->appointmentRepository->save($appointment);
+
+            DB::commit();
+            return $this->success(
+                $appointment, Response::HTTP_CREATED
+            );
+
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw new ConflictException($e->getMessage());
+        }
+    }
+
+
+    public function getAppointmentsByCustomer(Request $request, Cliente $cliente) : JsonResponse
+    {
+        return $this->success(
+            $this->appointmentRepository->getAppointmentsByCustomer($request, $cliente)
+        );
+    }
+
+
 
 
 }

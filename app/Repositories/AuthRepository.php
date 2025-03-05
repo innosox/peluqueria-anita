@@ -36,13 +36,13 @@ class AuthRepository  {
 
         #GENERAR TOKEN
         $token = Auth::user()->createToken('auth_token')->plainTextToken;
+        $dataUser = User::find(Auth::user()->id);
 
-       $dataUser = User::find(Auth::user()->id);
-        return $this->success([
+        return [
             "user" => $dataUser, //Auth::user(),
             'token_type' => 'Bearer',
             'access_token' => $token,
-        ]);
+        ];
     }
 
 

@@ -25,7 +25,7 @@ class AttentionRequest extends FormRequest
     {
         return [
             'appointment_id' => 'required|exists:appointments,id',
-            'service_id' => 'required|exists:service,id',
+            'service_id' => 'required|exists:services,id',
             'detail' => 'required|string|max:255',
             'price' => 'nullable|numeric',
         ];

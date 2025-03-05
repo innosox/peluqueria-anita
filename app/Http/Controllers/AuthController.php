@@ -6,6 +6,7 @@ use App\Exceptions\Custom\ConflictException;
 use App\Http\Requests\User\LoginRequest;
 use App\Models\User;
 use App\Repositories\AuthRepository;
+use App\Traits\RestResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -15,21 +16,22 @@ use Throwable;
 
 class AuthController extends Controller
 {
+    use RestResponse;
 
     /**
      * @var AuthRepository
      */
-    private $AuthRepository;
+    private $authRepository;
 
-    public function __construct(AuthRepository $AuthRepository)
+    public function __construct(AuthRepository $authRepository)
     {
-        $this->AuthRepository = $AuthRepository;
+        $this->authRepository = $authRepository;
     }
 
 
     public function login(LoginRequest $request)
     {
-        return $this->success($this->AuthRepository->login($request));
+        return $this->success($this->authRepository->login($request));
     }
 
     public function register(Request $request)
@@ -62,7 +64,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->revoke();
+        $request->user()->tokens()->delete();
         return response()->json(['message' => 'Logged out successfully']);
     }
 

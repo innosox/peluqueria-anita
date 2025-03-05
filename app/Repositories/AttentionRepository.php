@@ -16,7 +16,7 @@ class AttentionRepository extends BaseRepository
      *
      * @var array
      */
-    protected $relations = [];
+    protected $relations = ['cita.cliente', 'servicio'];
 
     /**
      * __construct
@@ -26,6 +26,7 @@ class AttentionRepository extends BaseRepository
     public function __construct(Atencion $attention)
     {
         parent::__construct($attention);
+
     }
 
 

@@ -17,10 +17,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+Route::post('/crear-cita', [AppointmentController::class, 'generateAppointment']);
+
+
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::apiResource('/clientes', CustomerController::class);
-    Route::apiResource('/citas', AppointmentController::class);
+    Route::resource('/citas', AppointmentController::class);
+    Route::get('/citas/cliente/{cliente}', [AppointmentController::class, 'getAppointmentsByCustomer']);
     Route::apiResource('/atenciones', AttentionController::class);
 });
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Atencion extends Model
 {
@@ -39,6 +40,25 @@ class Atencion extends Model
         'deleted_at'
     ];
 
+    /**
+     * cita
+     *
+     * @return BelongsTo
+     */
+    public function cita() : BelongsTo
+    {
+        return $this->belongsTo(Cita::class, 'appointment_id');
+    }
+
+    /**
+     * servicio
+     *
+     * @return BelongsTo
+     */
+    public function servicio() : BelongsTo
+    {
+        return $this->belongsTo(Servicio::class, 'service_id');
+    }
 
 
 }
