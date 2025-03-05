@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\Custom\ConflictException;
 use App\Http\Requests\Attention\AttentionRequest;
 use App\Models\Atencion;
+use App\Models\Cita;
 use App\Repositories\AttentionRepository;
 use App\Traits\RestResponse;
 use Illuminate\Http\JsonResponse;
@@ -58,6 +59,11 @@ class AttentionController extends Controller
     {
         DB::beginTransaction();
         try {
+
+            $cita = Cita::find($request->appointment_id);
+            $cita->status = 'realizada';
+            $cita->save();
+
             $attention = new Atencion($request->all());
             $attention = $this->attentionRepository->save($attention);
             DB::commit();
